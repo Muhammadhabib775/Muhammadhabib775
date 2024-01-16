@@ -1,0 +1,47 @@
+import random
+from math import gcd
+
+def generate_key(p, q):
+    n = p * q
+
+    phi = (p-1) * (q-1)
+
+    e = random.randrange(1, phi)
+    g = gcd(e, phi)
+
+    while g != 1:
+        e = random.randrange(1, phi)
+        g = gcd(e, phi)
+
+    d = pow(e, -1, phi)
+
+    return ((e, n), (d, n))
+
+def encrypt(pk, plaintext):
+    key, n = pk
+    ciphertext = [pow(ord(char), key, n) for char in plaintext]
+    return ciphertext
+
+def decrypt(sk, ciphertext):
+    key, n = sk
+    plaintext = [chr(pow(char, key, n)) for char in ciphertext]
+    return ''.join(plaintext)
+
+# MARI KITA COBA UNTUK MENGIMPLEMENTASIKAN ALGORITMANYA
+
+p = 13
+q = 19
+
+public_key, private_key = generate_key(p, q)
+
+print(f"Public Key: {public_key}")
+print(f"Private Key: {private_key}")
+
+plaintext = "HELLO WORLD"
+ciphertext = encrypt(public_key, plaintext)
+
+print(f"Ciphertext: {ciphertext}")
+
+decrypted_text = decrypt(private_key, ciphertext)
+
+print(f"Decrypted Text: {decrypted_text}")
